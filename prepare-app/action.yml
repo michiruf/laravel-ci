@@ -23,7 +23,7 @@ runs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.3'
+        php-version: ${{ inputs.php-version }}
         extensions: ${{ inputs.php-default-extensions }} ${{ inputs.php-additional-extensions }}
         coverage: ${{ inputs.coverage == 'true' && 'pcov' || 'none' }}
 
