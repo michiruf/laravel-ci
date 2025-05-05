@@ -1,3 +1,5 @@
+# $schema: https://json.schemastore.org/github-action.json
+
 name: Prepare App
 description: Install PHP, Composer & Project Dependencies
 
