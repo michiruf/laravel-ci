@@ -1,0 +1,39 @@
+name: Prepare App
+description: Install PHP, Composer & Project Dependencies
+
+inputs:
+  php-version:
+    description: PHP version
+    required: true
+  php-default-extensions:
+    description: Standard PHP extensions to install for laravel
+    default: 'dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo'
+  php-additional-extensions:
+    description: Additional PHP extensions to install
+    default: ''
+  coverage:
+    description: Install PHP with coverage
+    default: 'false'
+
+runs:
+  using: composite
+  steps:
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        extensions: ${{ inputs.php-default-extensions }} ${{ inputs.php-additional-extensions }}
+        coverage: ${{ inputs.coverage == 'true' && 'pcov' || 'none' }}
+
+    - name: Install Dependencies
+      uses: ramsey/composer-install@v3
+
+    - name: Create Dotenv
+      shell: sh
+      if: ${{ hashFiles('.env.example') != '' }}
+      run: cp .env.example .env
+
+    - name: Generate App Key
+      shell: sh
+      if: ${{ hashFiles('.env') != '' }}
+      run: php artisan key:generate
