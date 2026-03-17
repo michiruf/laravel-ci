@@ -28,7 +28,7 @@ runs:
         coverage: ${{ inputs.coverage == 'true' && 'pcov' || 'none' }}
 
     - name: Install Dependencies
-      uses: ramsey/composer-install@v3
+      uses: ramsey/composer-install@v4
 
     - name: Create Dotenv
       shell: sh
