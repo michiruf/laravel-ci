@@ -16,6 +16,12 @@ inputs:
   coverage:
     description: Install PHP with coverage
     default: 'false'
+  working-directory:
+    description: Path to the Laravel app (contains composer.json and .env.example)
+    default: '.'
+  composer-options:
+    description: Extra flags passed to composer install (e.g. --no-dev --optimize-autoloader)
+    default: ''
 
 runs:
   using: composite
@@ -29,13 +35,18 @@ runs:
 
     - name: Install Dependencies
       uses: ramsey/composer-install@v4
+      with:
+        working-directory: ${{ inputs.working-directory }}
+        composer-options: ${{ inputs.composer-options }}
 
     - name: Create Dotenv
       shell: sh
-      if: ${{ hashFiles('.env.example') != '' }}
+      working-directory: ${{ inputs.working-directory }}
+      if: ${{ hashFiles(format('{0}/.env.example', inputs.working-directory)) != '' }}
       run: cp .env.example .env
 
     - name: Generate App Key
       shell: sh
-      if: ${{ hashFiles('.env') != '' }}
+      working-directory: ${{ inputs.working-directory }}
+      if: ${{ hashFiles(format('{0}/.env', inputs.working-directory)) != '' }}
       run: php artisan key:generate
